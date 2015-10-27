@@ -9,6 +9,7 @@ require 'fakes3/xml_adapter'
 require 'fakes3/bucket_query'
 require 'fakes3/unsupported_operation'
 require 'fakes3/errors'
+require 'nokogiri'
 
 module FakeS3
   class Request
@@ -481,13 +482,11 @@ module FakeS3
       parts_xml   = ""
       request.body { |chunk| parts_xml << chunk }
 
-      # TODO: I suck at parsing xml
-      parts_xml = parts_xml.scan /\<Part\>.*?<\/Part\>/m
-
-      parts_xml.collect do |xml|
+      doc = Nokogiri::XML(parts_xml)
+      doc.xpath('//Part').map do |part|
         {
-          number: xml[/\<PartNumber\>(\d+)\<\/PartNumber\>/, 1].to_i,
-          etag:   xml[/\<ETag\>\"(.+)\"\<\/ETag\>/, 1]
+          etag: part.xpath('ETag').first.text[1..-2],
+          number: part.xpath('PartNumber').first.text.to_i,
         }
       end
     end
