@@ -1,4 +1,4 @@
-## Introduction
+<h1> VMware has ended active development of this project, this repository will no longer be updated.</h1><br>## Introduction
 FakeS3 is a lightweight server that responds to the same calls Amazon S3 responds to.
 It is extremely useful for testing of S3 in a sandbox environment without actually
 making calls to Amazon, which not only require network, but also cost you precious dollars.
